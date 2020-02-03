@@ -1,25 +1,24 @@
 import numpy as np
 
-##upload
-
 ## max 5x1+6x2+7x4
 ## x1+x2+2x3<=1
 ## x1+2x2+x3<=2
 
+M=10000
 ####确定数据
 ##系数矩阵-标准化后
-A=[[1,1,1,0],[1,2,0,1]]
+A=[[1,1,1,0,0],[2,1,0,1,0],[0,1,0,0,1]]
 A=np.mat(A)
 
-b=[[1],[2]]
+b=[[300],[400],[250]]
 b=np.mat(b)
 
-c=[[5],[6],[0],[0]]
+c=[[50],[100],[0],[0],[0]]
 c=np.mat(c)
 
 m=A.shape[0]
 
-xb=[2,3]
+xb=[2,3,4]
 xn=[0,1]
 
 xb.sort()
@@ -41,18 +40,22 @@ def calc_theta(_BI,_xin):
     for i in range(0,bi.shape[0]):
         if(ai[i]!=0):
             theta.append(float(bi[i]/ai[i]))
+        else:
+            theta.append(M)
     theta=np.array(theta)
     return theta
 
 stop=0
 while(stop==0):
-    print(stop)
+    print(stop,"stop")
+    print(xb,"xb",xn,"xn")
     B=A[:,xb]
+    print(B,"B")
     BI=B.I
     sigma=calc_sigma(BI)
 
-    print(sigma)
-    print(xb,"xb",xn,"xn")
+    print(sigma,"检验数")
+    
     print(BI.dot(b),"b")
 
     #存在使目标函数优化的非基变量
@@ -67,6 +70,7 @@ while(stop==0):
 
     #计算出基变量的theta值
     theta=calc_theta(BI,xin)
+    print(theta,"theta")
     if((theta>0).any()==True):
         stop=0
     else:
@@ -82,22 +86,8 @@ while(stop==0):
     xn.append(xout)
     xb.sort()
     xn.sort()
-
-
-
-    
-##    print(xout,"xout")
-##
-##        
-##    
-##
-##    print(theta,"theta")
-##    print(np.argmax(sigma))
-##
-##    print(xin)
-##    
-##    print((sigma>0).all())
-##    stop=1
+    print(xin,"xin",xout,"xout")
+    print("------------------------------------")
 
 
 
@@ -106,21 +96,6 @@ while(stop==0):
 ##C_A = C_A[:,[2,3]] #再取出要求的列数据
 
 
-
-B=[[0.5,0,0],[0.5,1,0],[0,0,1]]
-
-B=np.mat(B)
-
-c=B[:,[1,2]]
-##c=np.mat(c)
-
-b=[[1],[0],[0]]
-
-##print(B.I.dot(b))
-print(c)
-##print(A.I)
-##print(A)
-##print(B,B.I)
 
 
 
