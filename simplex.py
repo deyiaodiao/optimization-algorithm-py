@@ -1,24 +1,50 @@
 import numpy as np
+import time
 
+M=10000
+
+## model 1
 ## max 50x1+100x2
 ## x1+x2<=300
 ## 2x1+x2<=400
 ## x2<=250
 
-M=10000
+##A=np.mat([[1,1,1,0,0],[2,1,0,1,0],[0,1,0,0,1]])
+##
+##b=np.mat([[300],[400],[250]])
+##
+##c=np.mat([[50],[100],[0],[0],[0]])
+##
+##row=A.shape[0]
+##column=A.shape[1]
+##
+##xb=[2,3,4]
+##xn=[0,1]
+##
+##xb.sort()
+##xn.sort()
 
-##系数矩阵-标准化后
-A=np.mat([[1,1,1,0,0],[2,1,0,1,0],[0,1,0,0,1]])
+## model 2
+## max 0.043x1+0.027x2+0.025x3+0.022x4+0.045x5
+## x1+x2+x3+x4+x5<=1000
+## x2+x3+x4>=400
+## 2x1+2x2+x3+x4+5x5<=1.4(x1+x2+x3+x4+x5)
+## 9x1+15x2+4x3+3x4+2x5<=5(x1+x2+x3+x4+x5)
 
-b=np.mat([[300],[400],[250]])
+A=np.mat([[1,1,1,1,1,1,0,0,0,0],
+          [0,1,1,1,0,0,1,-1,0,0],
+          [0.6,0.6,-0.4,-0.4,3.6,0,0,0,1,0],
+          [4,10,-1,-2,-3,0,0,0,0,1]])
 
-c=np.mat([[50],[100],[0],[0],[0]])
+b=np.mat([[1000],[400],[0],[0]])
+
+c=np.mat([[0.043],[0.027],[0.025],[0.022],[0.045],[0],[0],[0],[0],[0]])
 
 row=A.shape[0]
 column=A.shape[1]
 
-xb=[2,3,4]
-xn=[0,1]
+xb=[5,6,8,9]
+xn=[0,1,2,3,4,7]
 
 xb.sort()
 xn.sort()
@@ -35,7 +61,7 @@ def calc_theta(_BI,_xin):
     ai=_BI.dot(A[:,_xin])
     theta=[]
     for i in range(0,bi.shape[0]):
-        if(ai[i]!=0):
+        if(ai[i]>0):
             theta.append(float(bi[i]/ai[i]))
         else:
             theta.append(M)
@@ -54,12 +80,12 @@ def calc_obj(_xb,_xn):
         sol[i]=float(_bi[index])
         index=index+1
     sol=np.mat(sol)
+    print(sol,"sol")
     obj=sol.dot(c)
-
     return obj
-
-
+ 
 if __name__=='__main__':
+    start_time=time.time()
     stop=0
     while(stop==0):
         print(xb,"xb",xn,"xn")
@@ -102,7 +128,13 @@ if __name__=='__main__':
         xn.sort()
         print(xin,"xin",xout,"xout")
         print("------------------------------------")
-    print(calc_obj(xb,xn),"obj")
+    if(stop==1):
+        print(calc_obj(xb,xn),"obj")
+    elif(stop==2):
+        print("模型无界")
+    end_time=time.time()
+    print("Execution Time: ", end_time - start_time)
+    
 
     
 
